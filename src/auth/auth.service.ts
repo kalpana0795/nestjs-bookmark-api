@@ -6,7 +6,7 @@ import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 
 @Injectable()
 export class AuthService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async signup(dto: AuthDto) {
     // generate password
@@ -27,7 +27,7 @@ export class AuthService {
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code == 'P2002') {
-          throw new ForbiddenException('Credential Taken')
+          throw new ForbiddenException('Credential Taken');
         }
       }
     }
@@ -37,19 +37,19 @@ export class AuthService {
     // find the user by email
     const user = await this.prisma.user.findUnique({
       where: {
-        email: dto.email
-      }
-    })
+        email: dto.email,
+      },
+    });
     // if user doesn't exist then throw exception
     if (!user) {
-      throw new ForbiddenException('Credential Incorrect.')
+      throw new ForbiddenException('Credential Incorrect.');
     }
 
     // match the password
-    const pwMatches = await argon.verify(user.hash, dto.password)
+    const pwMatches = await argon.verify(user.hash, dto.password);
     // if password does't match then throw exception
     if (!pwMatches) {
-      throw new ForbiddenException('Credential Incorrect')
+      throw new ForbiddenException('Credential Incorrect');
     }
 
     // return back user
